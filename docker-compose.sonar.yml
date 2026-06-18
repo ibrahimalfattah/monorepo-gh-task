@@ -1,0 +1,37 @@
+version: '3.8'
+
+# Local SonarQube instance for CI/CD code-quality analysis.
+# Expose it to GitHub Actions via ngrok or localtunnel:
+#
+#   Option A – ngrok (requires a free account):
+#     ngrok http 9000
+#     → copy the https://xxxx.ngrok.io URL into the SONAR_HOST_URL secret
+#
+#   Option B – localtunnel (no account needed):
+#     npx localtunnel --port 9000
+#     → copy the https://xxxx.loca.lt URL into the SONAR_HOST_URL secret
+
+services:
+  sonarqube:
+    image: sonarqube:community
+    container_name: local_sonarqube
+    ports:
+      - "9000:9000"
+    environment:
+      - SONAR_ES_BOOTSTRAP_CHECKS_DISABLE=true   # skip Elasticsearch bootstrap checks in dev
+    volumes:
+      - sonarqube_data:/opt/sonarqube/data
+      - sonarqube_logs:/opt/sonarqube/logs
+      - sonarqube_extensions:/opt/sonarqube/extensions
+    networks:
+      - sonar_net
+    restart: unless-stopped
+
+volumes:
+  sonarqube_data:
+  sonarqube_logs:
+  sonarqube_extensions:
+
+networks:
+  sonar_net:
+    driver: bridge
