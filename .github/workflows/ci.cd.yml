@@ -20,10 +20,6 @@ on:
     tags:
       - "v[0-9]+.[0-9]+.[0-9]+"   # matches v1.0.0, v2.3.14, etc.
 
-# Grant the GITHUB_TOKEN permission to create releases
-permissions:
-  contents: write
-
 # ─────────────────────────────────────────────────────────────────────────────
 # 2. JOBS
 # ─────────────────────────────────────────────────────────────────────────────
@@ -136,7 +132,5 @@ jobs:
       - name: Publish release with auto-generated notes
         uses: softprops/action-gh-release@v2
         with:
-          # Automatically generates release notes from commit messages
-          # since the previous tag (GitHub's built-in changelog feature)
           generate_release_notes: true
-          # The tag name is taken automatically from github.ref
+          token: ${{ secrets.GH_TOKEN }}
